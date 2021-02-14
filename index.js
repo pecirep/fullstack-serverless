@@ -347,13 +347,15 @@ class ServerlessFullstackPlugin {
             if (this.getConfig("route53", false)) {
                 await addCloudFrontAlias(
                     this.serverless,
-                    this.options.domain
+                    this.options.domain,
+                    this.options.route53.stsRole
                 );
                 // only create and override if not specified
                 if (certificate === null) {
                     distributionCertificate.AcmCertificateArn = await setupCertificate(
                         this.serverless,
-                        this.options.domain
+                        this.options.domain,
+                        this.options.route53.stsRole
                     );
                 }
             } else {
