@@ -12,7 +12,7 @@ const bucketUtils = require('./lib/bucketUtils');
 const uploadDirectory = require('./lib/upload');
 const validateClient = require('./lib/validate');
 const {invalidateCloudfrontDistribution} = require('./lib/cloudFront');
-const {addAliasRecord, setupCertificate} = require('./lib/route53');
+const {addCloudFrontAlias, setupCertificate} = require('./lib/route53');
 const {getCertificateArn} = require('./lib/acm');
 
 class ServerlessFullstackPlugin {
@@ -345,11 +345,11 @@ class ServerlessFullstackPlugin {
     
         if (this.options.domain) {
             if (this.getConfig("route53", false)) {
-                await addAliasRecord(
+                await addCloudFrontAlias(
                     this.serverless,
                     this.options.domain
                 );
-                // only override if not specified
+                // only create and override if not specified
                 if (certificate === null) {
                     distributionCertificate.AcmCertificateArn = await setupCertificate(
                         this.serverless,
